@@ -13,10 +13,9 @@
 #include "floor.h"
 #include "ball.h"
 #include "goal.h"
+#include "hud.h"
 
 int xOrigin,yOrigin;
-
-static GLuint texName;
 
 int nstep=0; // numero di passi di FISICA fatti fin'ora
 const int PHYS_SAMPLING_STEP=10; // numero di millisec che un passo di fisica simula
@@ -44,7 +43,6 @@ void reset_scene() {
   car->facing = 90;
 }
 
-
 int detect_collision(Object3D *obj1, Object3D *obj2) {
   float distance;
   float deltaX, deltaY, deltaZ;
@@ -70,7 +68,7 @@ void light (void) {
 void initObjects(void) {
   float red[] = {1.0, 0.0, 0.0};
   float blue[] = {0.0, 0.0, 1.0};
-  
+
   car=new Car();
   ground = new Floor();
   football=new Ball(3,1,3);
@@ -80,7 +78,7 @@ void initObjects(void) {
 }
 
 void init(void)
-{    
+{
   glClearColor (0.0,0.0,0.0,0.0);
 
   glShadeModel(GL_SMOOTH);
@@ -95,110 +93,19 @@ void init(void)
   initObjects();
 }
 
-void printText(const char* t, int x, int y) {
-  glRasterPos2f(x, y);
-  for(int i=0; i<strlen(t); i++)
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, t[i]);
-}
-
-void displayKeymap(int w, int h) {
-  int margin = 100;
-
-  glBegin(GL_QUADS);
-    glNormal3f(0,1,0);
-    glColor4f(0.6f, 0.6f, 0.6f, 0.6f);
-    glVertex2d(w-margin, 100+margin);
-    glVertex2d(margin, 100+margin);
-    glVertex2d(margin, h-margin);
-    glVertex2d(w-margin, h-margin);
-  glEnd(); 
-
-  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-  printText("W - accellerate", 150, h-150-0);
-  printText("L - turn left", 150, h-150-1*20);
-  printText("D - turn right", 150, h-150-2*20);
-  printText("S - break", 150, h-150-3*20);
-  printText("SPACE - jump", 150, h-150-4*20);
-  printText("F1 - change camera", 150, h-150-5*20);
-  
-  
-}
-
-void displayMap() {
-  int margin = 20;
-  int scaling = 3;
-  int w = 55;
-  int h = 35;
-
-  glBegin(GL_QUADS);
-    glNormal3f(0,1,0);
-    glColor4f(0.6f, 0.6f, 0.6f, 0.6f);
-    glVertex2d(margin+w*scaling, margin);
-    glVertex2d(margin, margin);
-    glVertex2d(margin, margin+h*scaling);
-    glVertex2d(margin+w*scaling, margin+h*scaling);
-  glEnd(); 
-
-  glPointSize(5.0f);
-  glBegin(GL_POINTS);
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glVertex2d(margin+(w/2-football->px)*scaling, margin+(h/2-football->pz)*scaling);
-    glColor4f(1.0f, 1.0f, 0.0f, 1.0f);
-    glVertex2d(margin+(w/2-car->px)*scaling, margin+(h/2-car->pz)*scaling);
-  glEnd();
-
-}
-
-void displayScore() {
-  glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
-  glRasterPos2f(50, 550);
-
-  char t[30];
-  sprintf(t, "Red %d - %d Blue", score[0], score[1]);
-
-  for(int i=0; i<strlen(t); i++)
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, t[i]);
-}
-
-void drawHUD() {
-  GLint m_viewport[4];
-
-  glGetIntegerv( GL_VIEWPORT, m_viewport );
-  glDisable(GL_LIGHTING);
-  glDisable(GL_DEPTH_TEST);
-  glMatrixMode( GL_PROJECTION );
-  glPushMatrix();
-  glLoadIdentity();
-  gluOrtho2D( 0, m_viewport[2], 0, m_viewport[3]);
-
-  glMatrixMode( GL_MODELVIEW );
-  glPushMatrix();
-  glLoadIdentity();
-  
-  displayScore();
-  displayMap();
-  if(is_showing_keymap) displayKeymap(m_viewport[2], m_viewport[3]);
-  
-  glEnable(GL_LIGHTING);
-  glEnable(GL_DEPTH_TEST);
-  glPopMatrix();
-  glMatrixMode( GL_PROJECTION );
-  glPopMatrix();
-  glMatrixMode( GL_MODELVIEW );
-}
-
 void display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
   setCamera();
   light();
+  
   ground->Render();
   football->Render();
   car->Render();
   goal1->Render();
   goal2->Render();
-  
+
   drawHUD();
 
   glutSwapBuffers();
@@ -302,7 +209,7 @@ bool point_for_blue() {
   return false;
 }
 
-void check_scores() { 
+void check_scores() {
   if(point_for_red()) {
     if(!scoring) {
       score[0]++;
@@ -315,7 +222,7 @@ void check_scores() {
       scoreTime = SDL_GetTicks();
     }
     scoring = true;
-  } 
+  }
 
   if(scoring && scoreTime+1000 < SDL_GetTicks()) {
     reset_scene();
@@ -334,7 +241,6 @@ void My_timer_routine( int t )
 void idleFunc() {
   Uint32 timeNow=SDL_GetTicks(); // che ore sono?
   bool doneSomething=false;
-  int guardia=0; // sicurezza da loop infinito
 
   // finche' il tempo simulato e' rimasto indietro rispetto
   // al tempo reale...
@@ -351,7 +257,7 @@ void idleFunc() {
       double vel_car = sqrt(car->vx*car->vx+car->vz*car->vz);
 
       double n_vx = deltaX / dist * vel_car * 3;
-      double n_vy = deltaY / dist * vel_car * 3; 
+      double n_vy = deltaY / dist * vel_car * 3;
       double n_vz = deltaZ / dist * vel_car * 3;
 
       football->Hit(n_vx, n_vy, n_vz);
@@ -389,5 +295,5 @@ int main(int argc, char** argv)
   glutMotionFunc(mouseMove);
   glutTimerFunc( 100, My_timer_routine, 0);
   glutMainLoop();
-  return 0; 
+  return 0;
 }

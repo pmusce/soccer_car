@@ -3,12 +3,12 @@
 
 #include <vector>
 #include "point3.h"
-// classe Vertex: 
+// classe Vertex:
 // i vertici della mesh
 
 class Vertex
-{ 
-public: 
+{
+public:
   Point3 p; // posizione
 
   // attributi per vertice
@@ -17,7 +17,7 @@ public:
 
 class Edge
 {
-public: 
+public:
   Vertex* v[2]; // due puntatori a Vertice (i due estremi dell'edge)
   // attributi per edge:
 };
@@ -42,7 +42,7 @@ public:
 
 class Face
 {
-public: 
+public:
   Vertex* v[3]; // tre puntatori a Vertice (i tre vertici del triangolo)
   Point2* vt[3];
   Material* mtl;
@@ -56,15 +56,15 @@ public:
   void SetTexture(Point2* a, Point2* b, Point2* c){
     vt[0]=a; vt[1]=b; vt[2]=c;
   }
-  
+
   // attributi per faccia
   Vector3 n; // normale (per faccia)
-  
+
   // computa la normale della faccia
   void ComputeNormal() {
     n= -( (v[1]->p - v[0]->p) % (v[2]->p - v[0]->p) ).Normalize();
   }
-  
+
   // attributi per wedge
 };
 
@@ -77,8 +77,8 @@ class Mesh
   std::vector<Edge> e;   // vettore di edge (per ora, non usato)
   std::vector<Material*> mtl;
 
-public:  
-  
+public:
+
   // costruttore con caricamento
   Mesh(char *path, char *filename){
     LoadFromObj(path, filename);
@@ -86,25 +86,25 @@ public:
     ComputeNormalsPerVertex();
     ComputeBoundingBox();
   }
-  
+
   // metodi
   void Render(); // manda a schermo la mesh
   void NoTexRender();
-  
+
   bool LoadFromObj(char *path, char *filename); //  carica la mesh da un file OFF
   bool LoadMaterials(char *path, char *filename);
-  
+
   void ComputeNormalsPerFace();
   void ComputeNormalsPerVertex();
   void ComputeBoundingBox();
 
   Material* GetMaterial(char *name);
   void SetDiffuse(float* color);
-  
+
   // centro del axis aligned bounding box
   Point3 Center(){ return (bbmin+bbmax)/2.0; };
-  
-  Point3 bbmin,bbmax; // bounding box 
+
+  Point3 bbmin,bbmax; // bounding box
 };
 
 #endif

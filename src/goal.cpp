@@ -28,12 +28,6 @@ void Goal::Init(float x, float y, float z, float* col){
   goal->SetDiffuse(color);
 }
 
-void Goal::DoStep() {
-
-}
-
-
-
 // disegna a schermo
 void Goal::Render() const{
   glPushMatrix();
