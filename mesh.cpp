@@ -45,25 +45,25 @@ void Mesh::SetDiffuse(float* color) {
 void Mesh::ComputeNormalsPerVertex()
 {
   // uso solo le strutture di navigazione FV (da Faccia a Vertice)!
-  
+
   // fase uno: ciclo sui vertici, azzero tutte le normali
   for (int i=0; i<v.size(); i++) {
     v[i].n = Point3(0,0,0);
   }
-  
+
   // fase due: ciclo sulle facce: accumulo le normali di F nei 3 V corrispondenti
   for (int i=0; i<f.size(); i++) {
     f[i].v[0]->n=f[i].v[0]->n + f[i].n;
     f[i].v[1]->n=f[i].v[1]->n + f[i].n;
     f[i].v[2]->n=f[i].v[2]->n + f[i].n;
   }
-  
+
   // fase tre: ciclo sui vertici; rinormalizzo
   // la normale media rinormalizzata e' uguale alla somma delle normnali, rinormalizzata
   for (int i=0; i<v.size(); i++) {
     v[i].n = v[i].n.Normalize();
   }
-  
+
 }
 
 
@@ -71,19 +71,19 @@ void Mesh::NoTexRender() {
   glDisable(GL_TEXTURE_2D);
   // mandiamo tutti i triangoli a schermo
   glBegin(GL_TRIANGLES);
-  for (int i=0; i<f.size(); i++) 
+  for (int i=0; i<f.size(); i++)
   {
 
     if(f[i].mtl != NULL)
       f[i].mtl->useMaterial();
-    
+
     //f[i].n.SendAsNormal(); // flat shading
     (f[i].v[0])->n.SendAsNormal();
     (f[i].v[0])->p.SendAsVertex();
-    
+
     (f[i].v[1])->n.SendAsNormal();
     (f[i].v[1])->p.SendAsVertex();
-    
+
     (f[i].v[2])->n.SendAsNormal();
     (f[i].v[2])->p.SendAsVertex();
   }
@@ -100,21 +100,21 @@ void Mesh::Render()
   }
   // mandiamo tutti i triangoli a schermo
   glBegin(GL_TRIANGLES);
-  for (int i=0; i<f.size(); i++) 
+  for (int i=0; i<f.size(); i++)
   {
 
     if(f[i].mtl != NULL)
       f[i].mtl->useMaterial();
-    
+
     //f[i].n.SendAsNormal(); // flat shading
     (f[i].v[0])->n.SendAsNormal();
     if(mtl[0]->use_texture) (f[i].vt[0])->SendAsTextureMap();
     (f[i].v[0])->p.SendAsVertex();
-    
+
     (f[i].v[1])->n.SendAsNormal();
     if(mtl[0]->use_texture) (f[i].vt[1])->SendAsTextureMap();
     (f[i].v[1])->p.SendAsVertex();
-    
+
     (f[i].v[2])->n.SendAsNormal();
     if(mtl[0]->use_texture) (f[i].vt[2])->SendAsTextureMap();
     (f[i].v[2])->p.SendAsVertex();
@@ -128,7 +128,7 @@ void Mesh::Render()
 
 Material* Mesh::GetMaterial(char *name) {
   for (int i=0; i<mtl.size(); i++) {
-    if(strcmp(mtl[i]->name, name) == 0) 
+    if(strcmp(mtl[i]->name, name) == 0)
       return mtl[i];
   }
   return NULL;
@@ -151,12 +151,13 @@ bool Mesh::LoadMaterials(char *path, char *filename) {
   strcat(fullpath, filename);
 
   FILE* file = fopen(fullpath, "rt"); // apriamo il file in lettura
-  if (!file) return false;
-
+  if (!file) {
+    fprintf(stderr,"File not found: %s\n", fullpath );
+    return false;
+  }
   char buf[128];
   // char name[20];
-  float Ns;
-  Material *m=NULL; 
+  Material *m=NULL;
 
   while(fscanf(file, "%s", buf) != EOF) {
     if(strcmp(buf,"#")==0) {
@@ -173,7 +174,7 @@ bool Mesh::LoadMaterials(char *path, char *filename) {
       // m->use_texture = false;
       fscanf(file,"%s", m->name);
       continue;
-    } 
+    }
     if (strcmp(buf,"Ns")==0) {
       fscanf(file,"%f", &m->Ns);
       continue;
@@ -222,27 +223,29 @@ bool Mesh::LoadMaterials(char *path, char *filename) {
 
 bool Material::LoadTexture(char *filename){
   SDL_Surface *s = IMG_Load(filename);
-  if (!s) return false;
-
+  if (!s) {
+    fprintf(stderr,"File not found: %s\n", filename );
+    return false;
+  }
   glGenTextures(1, &texName);
   glBindTexture(GL_TEXTURE_2D, texName);
 
   gluBuild2DMipmaps(
-    GL_TEXTURE_2D, 
+    GL_TEXTURE_2D,
     GL_RGBA,
-    s->w, s->h, 
+    s->w, s->h,
     GL_RGBA,
     GL_UNSIGNED_BYTE,
     s->pixels
   );
   glTexParameteri(
-    GL_TEXTURE_2D, 
+    GL_TEXTURE_2D,
     GL_TEXTURE_MAG_FILTER,
-     GL_LINEAR_MIPMAP_LINEAR ); 
+     GL_LINEAR_MIPMAP_LINEAR );
   glTexParameteri(
-    GL_TEXTURE_2D, 
+    GL_TEXTURE_2D,
     GL_TEXTURE_MIN_FILTER,
-     GL_LINEAR_MIPMAP_LINEAR ); 
+     GL_LINEAR_MIPMAP_LINEAR );
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -259,10 +262,13 @@ bool Mesh::LoadFromObj(char *path, char *filename)
   strcat(fullpath, filename);
 
   FILE* file = fopen(fullpath, "rt"); // apriamo il file in lettura
-  if (!file) return false;
+  if (!file) {
+    fprintf(stderr,"File not found: %s\n", fullpath );
+    return false;
+  }
 
   //make a first pass through the file to get a count of the number
-  //of vertices, normals, texcoords & triangles 
+  //of vertices, normals, texcoords & triangles
   char buf[128];
   int nv,nf,nt;
   float x,y,z;
@@ -282,12 +288,12 @@ bool Mesh::LoadFromObj(char *path, char *filename)
         case 'v':               // v, vn, vt
             switch(buf[1]) {
             case '\0':          // vertex
-                // eat up rest of line 
+                // eat up rest of line
                 fgets(buf, sizeof(buf), file);
                 nv++;
                 break;
             case 't':          // vertex
-                // eat up rest of line 
+                // eat up rest of line
                 fgets(buf, sizeof(buf), file);
                 nt++;
                 break;
@@ -344,9 +350,9 @@ bool Mesh::LoadFromObj(char *path, char *filename)
                 break;
         }
    }
- 
+
 //printf("dopo FirstPass nv=%d nf=%d nt=%d\n",nv,nf,nt);
-  
+
   // allochiamo spazio per nv vertici
   v.resize(nv);
 
@@ -354,7 +360,7 @@ bool Mesh::LoadFromObj(char *path, char *filename)
 
   // rewind to beginning of file and read in the data this pass
   rewind(file);
-  
+
   //on the second pass through the file, read all the data into the
   //allocated arrays
 
@@ -385,7 +391,7 @@ bool Mesh::LoadFromObj(char *path, char *filename)
             nv++;
             break;
           case 't':          // texture point
-            // eat up rest of line 
+            // eat up rest of line
             fscanf(file, "%f %f", &x, &y);
             vt[nt] = Point2( x,y );
             nt++;
@@ -479,7 +485,7 @@ bool Mesh::LoadFromObj(char *path, char *filename)
             Face newface( &(v[va]), &(v[vc]), &(v[vb]) ); // invoco il costruttore di faccia
             newface.mtl = current_mtl;
             f.push_back( newface ); // inserico la nuova faccia in coda al vettore facce
-            nt++; 
+            nt++;
             vb=vc;
           }
         }
