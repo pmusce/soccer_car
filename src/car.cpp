@@ -95,7 +95,7 @@ void Controller::Init(){
 void Car::Init(){
   collisionRadius = 1;
 
-  carlinga = new Mesh((char *)"resource/models/", (char *) "car2.obj");
+  carlinga = new Mesh((char *)"resource/models/", (char *) "car.obj");
   glass = new Mesh((char *)"resource/models/", (char *) "glass.obj");
   engine = new Mesh((char *)"resource/models/", (char *) "engine.obj");
   frontlight = new Mesh((char *)"resource/models/", (char *) "frontlight.obj");
