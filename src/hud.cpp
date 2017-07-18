@@ -8,6 +8,8 @@
 extern Object3D *football, *car;
 extern int score[];
 
+bool is_showing_keymap = false;
+
 static void printText(const char* t, int x, int y) {
   glRasterPos2f(x, y);
   for(int i=0; i<strlen(t); i++)
@@ -17,6 +19,7 @@ static void printText(const char* t, int x, int y) {
 static void displayKeymap(int w, int h) {
   int margin = 100;
 
+  // gray background
   glBegin(GL_QUADS);
     glNormal3f(0,1,0);
     glColor4f(0.6f, 0.6f, 0.6f, 0.6f);
@@ -41,6 +44,7 @@ static void displayMap() {
   int w = 55;
   int h = 35;
 
+  // field
   glBegin(GL_QUADS);
     glNormal3f(0,1,0);
     glColor4f(0.6f, 0.6f, 0.6f, 0.6f);
@@ -50,6 +54,7 @@ static void displayMap() {
     glVertex2d(margin+w*scaling, margin+h*scaling);
   glEnd();
 
+  // ball and car as points on map
   glPointSize(5.0f);
   glBegin(GL_POINTS);
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -69,15 +74,15 @@ static void displayScore(int w, int h) {
 
 void drawHUD() {
   GLint m_viewport[4];
-
   glGetIntegerv( GL_VIEWPORT, m_viewport );
+
   glDisable(GL_LIGHTING);
   glDisable(GL_DEPTH_TEST);
+
   glMatrixMode( GL_PROJECTION );
   glPushMatrix();
   glLoadIdentity();
   gluOrtho2D( 0, m_viewport[2], 0, m_viewport[3]);
-
   glMatrixMode( GL_MODELVIEW );
   glPushMatrix();
   glLoadIdentity();
@@ -86,10 +91,12 @@ void drawHUD() {
   displayMap();
   if(is_showing_keymap) displayKeymap(m_viewport[2], m_viewport[3]);
 
-  glEnable(GL_LIGHTING);
-  glEnable(GL_DEPTH_TEST);
   glPopMatrix();
   glMatrixMode( GL_PROJECTION );
   glPopMatrix();
   glMatrixMode( GL_MODELVIEW );
+
+  glEnable(GL_LIGHTING);
+  glEnable(GL_DEPTH_TEST);
+
 }

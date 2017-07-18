@@ -8,7 +8,7 @@ ODIR = build
 
 TARGET  = play
 
-_OBJ =  main.o camera.o mesh.o car.o floor.o ball.o goal.o hud.o
+_OBJ =  main.o camera.o hud.o input.o mesh.o car.o floor.o ball.o goal.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 LIBS = -L/usr/X11R6 -lGL -lGLU -lSDL2_image -lSDL2_ttf -lSDL2 -lm -lglut -ggdb

@@ -35,9 +35,10 @@ void Ball::DoStep(){
   }
   pz+=vz;
 
+  // bounce against border
   if(pz>17 && vz>0) vz*=-1;
   if(pz<-17 && vz<0) vz*=-1;
-  if(pz < -4.5 || pz > 4.5) {
+  if(pz < -4.5 || pz > 4.5) { // goal
     if(px>27 && vx>0) vx*=-1;
     if(px<-27 && vx<0) vx*=-1;
   }

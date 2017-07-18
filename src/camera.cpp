@@ -5,9 +5,9 @@
 #include "car.h"
 #include "ball.h"
 
-float angle=0.0;
 float viewAlpha=20, viewBeta=40; // angoli che definiscono la vista
 float eyeDist=7.0;
+
 extern Car* car;
 extern Ball* football;
 static int currentCamera = CAMERA_BALL;

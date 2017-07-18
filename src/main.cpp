@@ -8,14 +8,14 @@
 #include <vector>
 
 #include "camera.h"
+#include "hud.h"
+#include "input.h"
+
 #include "mesh.h"
 #include "car.h"
 #include "floor.h"
 #include "ball.h"
 #include "goal.h"
-#include "hud.h"
-
-int xOrigin,yOrigin;
 
 int nstep=0; // numero di passi di FISICA fatti fin'ora
 const int PHYS_SAMPLING_STEP=10; // numero di millisec che un passo di fisica simula
@@ -31,8 +31,6 @@ Goal* goal2;
 int score[2] = {0,0};
 bool scoring=false;
 Uint32 scoreTime;
-
-bool is_showing_keymap = false;
 
 void reset_scene() {
   football->setPos(0.0,0.0,0.0);
@@ -58,7 +56,7 @@ int detect_collision(Object3D *obj1, Object3D *obj2) {
 void light (void) {
   GLfloat whiteSpecularLight[] = {1.0, 1.0, 1.0}; //set the light specular to white
   GLfloat blackAmbientLight[] = {0.2, 0.2, 0.2}; //set the light ambient to black
-  GLfloat whiteDiffuseLight[] = {1.0, 1.0, 1.0}; //set the diffuse light to white
+  GLfloat whiteDiffuseLight[] = {1.0, 1.0, 0.863}; //set the diffuse light to white
   glLightfv(GL_LIGHT0, GL_POSITION, light_v );
   glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight);
   glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight);
@@ -99,7 +97,7 @@ void display(void)
   glLoadIdentity();
   setCamera();
   light();
-  
+
   ground->Render();
   football->Render();
   car->Render();
@@ -120,77 +118,6 @@ void reshape(int w, int h)
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(0.0, 0.0, -3.6);
-}
-
-void keyboard (unsigned char key, int x, int y)
-{
-  switch (key) {
-    case 27:
-      exit(0);
-      break;
-    case 9:
-      is_showing_keymap = true;
-      break;
-    default:
-      static int keymap[Controller::NKEYS] = {'a', 'd', 'w', 's', ' '};
-      car->controller.EatKey(key, keymap, true);
-      break;
-  }
-}
-
-void keyUp (unsigned char key, int x, int y)
-{
-  if(key == 9) {
-    is_showing_keymap = false;
-    return;
-  }
-  static int keymap[Controller::NKEYS] = {'a', 'd', 'w', 's', ' '};
-  car->controller.EatKey(key, keymap, false);
-}
-
-void keyboardSpecial (int key, int x, int y) {
-  switch(key) {
-    case GLUT_KEY_F1:
-      nextCamera();
-      break;
-    default:
-      break;
-  }
-}
-
-void mouseButton(int button, int state, int x, int y) {
-  // Wheel reports as button 3(scroll up) and button 4(scroll down)
-  if(button == 3) {
-    eyeDist=eyeDist*0.9;
-    if (eyeDist<1) eyeDist = 1;
-  }
-  if(button == 4) {
-    eyeDist=eyeDist/0.9;
-  }
-
-  if (button == GLUT_LEFT_BUTTON) {
-
-    // when the button is released
-    if (state == GLUT_UP) {
-      xOrigin = -1;
-      yOrigin = -1;
-    }
-    else  {// state = GLUT_DOWN
-      xOrigin = x;
-      yOrigin = y;
-    }
-  }
-}
-
-void mouseMove(int x, int y) {
-  viewAlpha+= x - xOrigin;
-  viewBeta += y - yOrigin;
-
-  xOrigin = x;
-  yOrigin = y;
-
-  if (viewBeta<+5) viewBeta=+5; //per non andare sotto la macchina
-  if (viewBeta>+90) viewBeta=+90;
 }
 
 bool point_for_red() {
