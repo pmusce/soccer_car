@@ -1,4 +1,4 @@
-# Project: progettoCar3
+# Project: soccer_car
 
 CPP  = g++
 CC   = gcc

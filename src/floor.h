@@ -12,5 +12,7 @@ private:
 	void RenderSky() const;
 	void RenderField() const;
 	void RenderGround() const;
+  void RenderBorder() const;
+
 	GLuint texture;
 };

@@ -13,6 +13,7 @@
 #include <iostream>
 
 #include "floor.h"
+#include "point3.h"
 
 #ifdef DEBUG
 #include <iostream>
@@ -182,26 +183,51 @@ void Floor::RenderGround() const{
   glEnd();
 }
 
+
+static Vector3 ComputeNormal(Point3 p0, Point3 p1, Point3 p2) {
+  return -( (p1 - p0) % (p2 - p0) ).Normalize();
+}
+
+void Floor::RenderBorder() const{
+    Point3 v[10];
+
+    v[0] = Point3(33, 0, -23);
+    v[1] = Point3(34, 2, -24);
+    v[2] = Point3(33, 0, 23);
+    v[3] = Point3(34, 2, 24);
+    v[4] = Point3(-33, 0, 23);
+    v[5] = Point3(-34, 2, 24);
+    v[6] = Point3(-33, 0, -23);
+    v[7] = Point3(-34, 2, -24);
+    v[8] = Point3(33, 0, -23);
+    v[9] = Point3(34, 2, -24);
+    Vector3 n;
+
+    float yellow[4] = {0.6, 0.6, 0.0, 1.0};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, yellow);
+    glShadeModel(GL_FLAT);
+    glBegin(GL_QUAD_STRIP);
+      for(int i=0; i<8; i+=2) {
+        n = ComputeNormal(v[i],v[i+1],v[i+2]);
+        n.SendAsNormal();
+
+        if(i==0) {
+          v[0].SendAsVertex();
+          v[1].SendAsVertex();
+        }
+
+        v[i+2].SendAsVertex();
+        v[i+3].SendAsVertex();
+      }
+    glEnd();
+    glShadeModel(GL_SMOOTH);
+}
+
+
 // disegna a schermo
 void Floor::Render() const{
-
   RenderSky();
   RenderField();
   RenderGround();
-
-  float yellow[4] = {0.6, 0.6, 0.0, 1.0};
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, yellow);
-  glBegin(GL_QUAD_STRIP);
-    glVertex3d(33, 0, -23);
-    glVertex3d(34, 2, -24);
-    glVertex3d(33, 0, 23);
-    glVertex3d(34, 2, 24);
-    glVertex3d(-33, 0, 23);
-    glVertex3d(-34, 2, 24);
-    glVertex3d(-33, 0, -23);
-    glVertex3d(-34, 2, -24);
-    glVertex3d(33, 0, -23);
-    glVertex3d(34, 2, -24);
-  glEnd();
-
+  RenderBorder();
 }

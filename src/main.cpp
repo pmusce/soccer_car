@@ -53,72 +53,6 @@ int detect_collision(Object3D *obj1, Object3D *obj2) {
   return distance <= obj1->collisionRadius+obj2->collisionRadius;
 }
 
-void light (void) {
-  GLfloat whiteSpecularLight[] = {1.0, 1.0, 1.0}; //set the light specular to white
-  GLfloat blackAmbientLight[] = {0.2, 0.2, 0.2}; //set the light ambient to black
-  GLfloat whiteDiffuseLight[] = {1.0, 1.0, 0.863}; //set the diffuse light to white
-  glLightfv(GL_LIGHT0, GL_POSITION, light_v );
-  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight);
-  glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight);
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight);
-}
-
-void initObjects(void) {
-  float red[] = {1.0, 0.0, 0.0};
-  float blue[] = {0.0, 0.0, 1.0};
-
-  car=new Car();
-  ground = new Floor();
-  football=new Ball(3,1,3);
-  goal1 = new Goal(0,0,27,red);
-  goal2 = new Goal(0,0,-27,blue);
-  reset_scene();
-}
-
-void init(void)
-{
-  glClearColor (0.0,0.0,0.0,0.0);
-
-  glShadeModel(GL_SMOOTH);
-  glEnable(GL_DEPTH_TEST);
-  glEnable (GL_LIGHTING);
-  glEnable (GL_LIGHT0);
-  glEnable(GL_NORMALIZE);
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-  glEnable(GL_POINT_SMOOTH);
-
-  initObjects();
-}
-
-void display(void)
-{
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glLoadIdentity();
-  setCamera();
-  light();
-
-  ground->Render();
-  football->Render();
-  car->Render();
-  goal1->Render();
-  goal2->Render();
-
-  drawHUD();
-
-  glutSwapBuffers();
-}
-
-void reshape(int w, int h)
-{
-  glViewport(0, 0, (GLsizei) w, (GLsizei) h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(60.0, (GLfloat) w/(GLfloat) h, 1.0, 180.0);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  glTranslatef(0.0, 0.0, -3.6);
-}
 
 bool point_for_red() {
   if(football->px > 26.75 && football->px < 27.25)
@@ -157,6 +91,74 @@ void check_scores() {
   }
 }
 
+void initObjects(void) {
+  float red[] = {1.0, 0.0, 0.0};
+  float blue[] = {0.0, 0.0, 1.0};
+
+  car=new Car();
+  ground = new Floor();
+  football=new Ball(3,1,3);
+  goal1 = new Goal(0,0,27,red);
+  goal2 = new Goal(0,0,-27,blue);
+  reset_scene();
+}
+
+void init(void)
+{
+  glClearColor (0.0,0.0,0.0,0.0);
+
+  glShadeModel(GL_SMOOTH);
+  glEnable(GL_DEPTH_TEST);
+  glEnable (GL_LIGHTING);
+  glEnable (GL_LIGHT0);
+  glEnable(GL_NORMALIZE);
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_POINT_SMOOTH);
+
+  initObjects();
+}
+
+
+void light (void) {
+  GLfloat whiteSpecularLight[] = {1.0, 1.0, 1.0}; //set the light specular to white
+  GLfloat blackAmbientLight[] = {0.2, 0.2, 0.2}; //set the light ambient to black
+  GLfloat whiteDiffuseLight[] = {1.0, 1.0, 0.863}; //set the diffuse light to white
+  glLightfv(GL_LIGHT0, GL_POSITION, light_v );
+  glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight);
+  glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight);
+}
+
+void display(void)
+{
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glLoadIdentity();
+  setCamera();
+  light();
+
+  ground->Render();
+  football->Render();
+  car->Render();
+  goal1->Render();
+  goal2->Render();
+
+  drawHUD();
+
+  glutSwapBuffers();
+}
+
+void reshape(int w, int h)
+{
+  glViewport(0, 0, (GLsizei) w, (GLsizei) h);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  gluPerspective(60.0, (GLfloat) w/(GLfloat) h, 1.0, 180.0);
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+  glTranslatef(0.0, 0.0, -3.6);
+}
+
 void My_timer_routine( int t )
 {
   // Update display
@@ -190,18 +192,14 @@ void idleFunc() {
       football->Hit(n_vx, n_vy, n_vz);
     }
 
-
     check_scores();
 
     nstep++;
     doneSomething=true;
     timeNow=SDL_GetTicks();
-    // if (guardia++>1000) {done=true; break;} // siamo troppo lenti!
   }
 
-  if (doneSomething) {
-    display();
-  }
+  if (doneSomething) display();
 }
 
 int main(int argc, char** argv)
@@ -210,7 +208,7 @@ int main(int argc, char** argv)
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(800, 600);
   glutInitWindowPosition(100, 100);
-  glutCreateWindow("A texture map");
+  glutCreateWindow("Soccer Car");
   init();
   glutDisplayFunc(display);
   glutIdleFunc(idleFunc);
@@ -220,7 +218,7 @@ int main(int argc, char** argv)
   glutKeyboardUpFunc(keyUp);
   glutMouseFunc(mouseButton);
   glutMotionFunc(mouseMove);
-  glutTimerFunc( 100, My_timer_routine, 0);
+  glutTimerFunc( 50, My_timer_routine, 0);
   glutMainLoop();
   return 0;
 }
