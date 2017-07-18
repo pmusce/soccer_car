@@ -3,9 +3,9 @@
 
 #include <vector>
 #include "point3.h"
+
 // classe Vertex:
 // i vertici della mesh
-
 class Vertex
 {
 public:
@@ -34,7 +34,7 @@ public:
   GLfloat Ni;
   int illum;
   bool use_texture;
-  int texture_index;
+  GLuint texture_index;
 
   void useMaterial();
   bool LoadTexture(char* filename);

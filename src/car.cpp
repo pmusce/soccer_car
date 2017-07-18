@@ -2,17 +2,21 @@
 // implementazione dei metodi definiti in car.h
 
 #include <math.h>
-
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <vector>
-#include "mesh.h"
+
 #include "car.h"
 
 #ifdef DEBUG
 #include <iostream>
 using namespace std;
 #endif
+
+
+void Controller::Init(){
+  for (int i=0; i<NKEYS; i++) key[i]=false;
+}
 
 // da invocare quando e' stato premuto/rilasciato il tasto numero "keycode"
 void Controller::EatKey(int keycode, int* keymap, bool pressed_or_released)
@@ -22,8 +26,6 @@ void Controller::EatKey(int keycode, int* keymap, bool pressed_or_released)
   }
 }
 
-void Car::Hit(float x, float y, float z) {
-}
 
 // DoStep: facciamo un passo di fisica (a delta-t costante)
 //
@@ -87,11 +89,6 @@ void Car::DoStep(){
   pz+=vz;
 }
 
-
-void Controller::Init(){
-  for (int i=0; i<NKEYS; i++) key[i]=false;
-}
-
 void Car::Init(){
   collisionRadius = 1;
 
@@ -113,11 +110,9 @@ void Car::Init(){
   controller.Init();
 
   velSterzo=3.4;         // A
-//  velSterzo=2.26;       // A
   velRitornoSterzo=0.93; // B, sterzo massimo = A*B / (1-B)
 
   accMax = 0.0011;
-  //accMax = 0.0055;
 
   // attriti: percentuale di velocita' che viene mantenuta
   // 1 = no attrito
@@ -137,9 +132,7 @@ void Car::Init(){
 
 // disegna a schermo
 void Car::Render() const{
-
   // sono nello spazio mondo
-
   glPushMatrix();
 
   glTranslatef(px,py,pz);

@@ -17,7 +17,6 @@ int nextCamera() {
   return currentCamera;
 }
 
-
 void setMouseCamera() {
   glTranslatef(0,0,-eyeDist);
   glRotatef(viewBeta,  1,0,0);
@@ -32,7 +31,6 @@ void setCarCamera() {
   double cosf = cos(angle*M_PI/180.0);
   double sinf = sin(angle*M_PI/180.0);
   double camd, camh, ex, ey, ez, cx, cy, cz;
-  double cosff, sinff;
 
   camd = 2.5;
   camh = 0.8;
@@ -57,12 +55,10 @@ void setBallCamera() {
   double deltaZ = pz - cz;
   double dist = sqrt(deltaX*deltaX+deltaZ*deltaZ);
 
-
   double cosf = deltaZ / dist;
   double sinf = deltaX / dist;
   double camd, camh, ex, ey, ez;
 
-  
   camd = 2.5;
   camh = 0.8;
   ex = px + camd*sinf;

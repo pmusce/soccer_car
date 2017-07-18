@@ -13,17 +13,44 @@
 
 #include "mesh.h"
 
-static GLuint texName;
-
-int textbind = 1;
-
-
-
 void Material::useMaterial() {
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, Kd);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, Ks);
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, Ke);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &Ns);
+}
+
+
+bool Material::LoadTexture(char *filename){
+  SDL_Surface *s = IMG_Load(filename);
+  if (!s) {
+    fprintf(stderr,"File not found: %s\n", filename );
+    return false;
+  }
+  glGenTextures(1, &texture_index);
+  glBindTexture(GL_TEXTURE_2D, texture_index);
+
+  gluBuild2DMipmaps(
+    GL_TEXTURE_2D,
+    GL_RGBA,
+    s->w, s->h,
+    GL_RGBA,
+    GL_UNSIGNED_BYTE,
+    s->pixels
+  );
+  glTexParameteri(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MAG_FILTER,
+     GL_LINEAR_MIPMAP_LINEAR );
+  glTexParameteri(
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MIN_FILTER,
+     GL_LINEAR_MIPMAP_LINEAR );
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+  use_texture = true;
+  return true;
 }
 
 void Mesh::ComputeNormalsPerFace()
@@ -63,7 +90,6 @@ void Mesh::ComputeNormalsPerVertex()
   for (int i=0; i<v.size(); i++) {
     v[i].n = v[i].n.Normalize();
   }
-
 }
 
 
@@ -87,7 +113,6 @@ void Mesh::NoTexRender() {
     (f[i].v[2])->n.SendAsNormal();
     (f[i].v[2])->p.SendAsVertex();
   }
-
   glEnd();
 }
 
@@ -218,40 +243,6 @@ bool Mesh::LoadMaterials(char *path, char *filename) {
     mtl.push_back(m);
   }
   fclose(file);
-  return true;
-}
-
-bool Material::LoadTexture(char *filename){
-  SDL_Surface *s = IMG_Load(filename);
-  if (!s) {
-    fprintf(stderr,"File not found: %s\n", filename );
-    return false;
-  }
-  glGenTextures(1, &texName);
-  glBindTexture(GL_TEXTURE_2D, texName);
-
-  gluBuild2DMipmaps(
-    GL_TEXTURE_2D,
-    GL_RGBA,
-    s->w, s->h,
-    GL_RGBA,
-    GL_UNSIGNED_BYTE,
-    s->pixels
-  );
-  glTexParameteri(
-    GL_TEXTURE_2D,
-    GL_TEXTURE_MAG_FILTER,
-     GL_LINEAR_MIPMAP_LINEAR );
-  glTexParameteri(
-    GL_TEXTURE_2D,
-    GL_TEXTURE_MIN_FILTER,
-     GL_LINEAR_MIPMAP_LINEAR );
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-
-  use_texture = true;
-  texture_index = texName;
   return true;
 }
 

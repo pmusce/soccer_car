@@ -16,12 +16,11 @@ public:
   // Metodi
   void Init(); // inizializza variabili
   void Render() const; // disegna a schermo
-  void Hit(float fx, float fy, float fz);
   void DoStep(); // computa un passo del motore fisico
   Car(){Init();} // costruttore
- 
+
   Controller controller;
- 
+
   // STATO DELLA MACCHINA
   // (DoStep fa evolvere queste variabili nel tempo)
   float facing; // posizione e orientamento
@@ -29,7 +28,7 @@ public:
 
   // STATS DELLA MACCHINA
   // (di solito rimangono costanti)
-  float velSterzo, velRitornoSterzo, accMax, attrito,
+  float velSterzo, velRitornoSterzo, accMax,
         raggioRuotaA, raggioRuotaP, grip,
         attritoX, attritoY, attritoZ; // attriti
 

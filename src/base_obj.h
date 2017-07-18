@@ -6,9 +6,6 @@ public:
   // Metodi
   virtual void Render() const{
   } // disegna a schermo
-  virtual void DoStep() {
-  } // computa un passo del motore fisico
-  virtual void Hit(float fx, float fy, float fz) {}
   bool DoesCollide() {
   	return collide;
   }

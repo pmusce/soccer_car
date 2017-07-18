@@ -85,16 +85,6 @@ void Floor::Init(){
   cubeText[5] = LoadTexture("resource/texture/jajlands1_ft.jpg");
 }
 
-void Floor::DoStep() {
-
-}
-
-
-void drawCubeFill(float S)
-{
-
-}
-
 void Floor::RenderSky() const{
   int S = 80;
   glEnable(GL_TEXTURE_2D);
