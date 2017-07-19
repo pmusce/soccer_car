@@ -1,9 +1,11 @@
 #include <GL/glut.h>
 #include "car.h"
+#include "ball.h"
 #include "camera.h"
 #include "hud.h"
 
 extern Car* car;
+extern Ball* football;
 
 static int xOrigin,yOrigin;
 
@@ -37,6 +39,9 @@ void keyboardSpecial (int key, int x, int y) {
   switch(key) {
     case GLUT_KEY_F1:
       nextCamera();
+      break;
+    case GLUT_KEY_F2:
+      football->ChangeBallType();
       break;
     default:
       break;
