@@ -14,5 +14,5 @@ private:
 	void RenderGround() const;
   void RenderBorder() const;
 
-	GLuint field_tex
+	GLuint field_tex;
 };

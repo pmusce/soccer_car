@@ -184,7 +184,7 @@ void Floor::RenderBorder() const{
   v[9] = Point3(34, 2, -24);
   Vector3 n;
 
-  float yellow[4] = {0.6, 0.6, 0.0, 1.0};
+  float yellow[4] = {0.95, 0.9, 0.51, 1.0};
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, yellow);
   glShadeModel(GL_FLAT);
   glBegin(GL_QUAD_STRIP);
