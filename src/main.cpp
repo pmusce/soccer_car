@@ -17,6 +17,9 @@
 #include "ball.h"
 #include "goal.h"
 
+#define RED_TEAM 0
+#define BLUE_TEAM 1
+
 int nstep=0; // numero di passi di FISICA fatti fin'ora
 const int PHYS_SAMPLING_STEP=10; // numero di millisec che un passo di fisica simula
 
@@ -31,14 +34,21 @@ Goal* goal2;
 int score[2] = {0,0};
 bool scoring=false;
 Uint32 scoreTime;
+int scoringTeam = 0;
 
 void reset_scene() {
   football->setPos(0.0,0.0,0.0);
   football->setVel(0.0,0.0,0.0);
 
-  car->setPos(7.0,0.0,0.0);
   car->setVel(0.0,0.0,0.0);
-  car->facing = 90;
+
+  if(scoringTeam == BLUE_TEAM) {
+    car->setPos(-7.0,0.0,0.0);
+    car->facing = -90;
+  } else {
+    car->setPos(7.0,0.0,0.0);
+    car->facing = 90;
+  }
 }
 
 int detect_collision(Object3D *obj1, Object3D *obj2) {
@@ -72,12 +82,14 @@ bool point_for_blue() {
 
 void check_scores() {
   if(point_for_red()) {
+    scoringTeam = RED_TEAM;
     if(!scoring) {
       score[0]++;
       scoreTime = SDL_GetTicks();
     }
     scoring = true;
   } else if(point_for_blue()) {
+    scoringTeam = BLUE_TEAM;
     if(!scoring) {
       score[1]++;
       scoreTime = SDL_GetTicks();

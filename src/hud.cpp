@@ -7,6 +7,8 @@
 
 extern Object3D *football, *car;
 extern int score[];
+extern bool scoring;
+extern int scoringTeam;
 
 bool is_showing_keymap = false;
 
@@ -72,6 +74,11 @@ static void displayScore(int w, int h) {
   printText(t,50,h-50);
 }
 
+static void displayGoal(int w, int h) {
+  glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
+  printText("GOAL!", w/2 - 20, h/2);
+}
+
 void drawHUD() {
   GLint m_viewport[4];
   glGetIntegerv( GL_VIEWPORT, m_viewport );
@@ -90,6 +97,7 @@ void drawHUD() {
   displayScore(m_viewport[2], m_viewport[3]);
   displayMap();
   if(is_showing_keymap) displayKeymap(m_viewport[2], m_viewport[3]);
+  if(scoring) displayGoal(m_viewport[2], m_viewport[3]);
 
   glPopMatrix();
   glMatrixMode( GL_PROJECTION );
