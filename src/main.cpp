@@ -134,9 +134,9 @@ void init(void)
 
 void light (void) {
   GLfloat whiteSpecularLight[] = {1.0, 1.0, 1.0}; //set the light specular to white
-  GLfloat blackAmbientLight[] = {0.2, 0.2, 0.2}; //set the light ambient to black
+  GLfloat blackAmbientLight[] = {0.0, 0.0, 0.0}; //set the light ambient to black
   // GLfloat whiteDiffuseLight[] = {1.0, 1.0, 0.863}; //set the diffuse light to white
-  GLfloat whiteDiffuseLight[] = {0.2, 0.2, 0.2};
+  GLfloat whiteDiffuseLight[] = {0.1, 0.1, 0.1};
   glLightfv(GL_LIGHT0, GL_POSITION, light_v );
   glLightfv(GL_LIGHT0, GL_SPECULAR, whiteSpecularLight);
   glLightfv(GL_LIGHT0, GL_AMBIENT, blackAmbientLight);
