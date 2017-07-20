@@ -91,7 +91,7 @@ void Car::DoStep(){
 
 void Car::Init(){
   collisionRadius = 1;
-
+  isLightsActive = true;
   carlinga = new Mesh((char *)"resource/models/", (char *) "car.obj");
   glass = new Mesh((char *)"resource/models/", (char *) "glass.obj");
   engine = new Mesh((char *)"resource/models/", (char *) "engine.obj");
@@ -101,7 +101,6 @@ void Car::Init(){
   tyreBL = new Mesh((char *)"resource/models/", (char *) "tyre3.obj");
   tyreBR = new Mesh((char *)"resource/models/", (char *) "tyre4.obj");
 
-  collide=true;
   // inizializzo lo stato della macchina
   px=py=pz=facing=0; // posizione e orientamento
   mozzoA=mozzoP=sterzo=0;   // stato
@@ -129,8 +128,18 @@ void Car::Init(){
   grip = 0.45; // quanto il facing macchina si adegua velocemente allo sterzo
 }
 
+void Car::ToggleLights() {
+  isLightsActive = !isLightsActive;
+}
+
 void Car::Frontlights(int light_num, float x, float y, float z) const{
   GLuint light = GL_LIGHT1 + light_num;
+
+  if (!isLightsActive) {
+    glDisable(light);
+    return;
+  }
+
   glEnable(light);
 
   float col0[4]= {0.8,0.8,0.0,  1};
@@ -154,7 +163,6 @@ void Car::Frontlights(int light_num, float x, float y, float z) const{
 
   glLightf(light,GL_CONSTANT_ATTENUATION,0);
   glLightf(light,GL_LINEAR_ATTENUATION,0.75);
-  //glDisable(light);
 }
 
 // disegna a schermo

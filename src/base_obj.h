@@ -6,10 +6,6 @@ public:
   // Metodi
   virtual void Render() const{
   } // disegna a schermo
-  bool DoesCollide() {
-  	return collide;
-  }
-
   float px,py,pz; // posizione
   float vx,vy,vz; // velocita' attuale
 
@@ -21,7 +17,6 @@ public:
   }
   float collisionRadius;
 protected:
-	bool collide;
 };
 
 

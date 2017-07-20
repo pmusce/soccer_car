@@ -16,7 +16,7 @@ public:
   // Metodi
   void Init(); // inizializza variabili
   void Render() const; // disegna a schermo
-  void Frontlights(int light_num, float x, float y, float z) const;
+  void ToggleLights();
   void DoStep(); // computa un passo del motore fisico
   Car(){Init();} // costruttore
 
@@ -34,6 +34,8 @@ public:
         attritoX, attritoY, attritoZ; // attriti
 
 private:
+  bool isLightsActive;
+  void Frontlights(int light_num, float x, float y, float z) const;
   Mesh* carlinga;
   Mesh* glass;
   Mesh* engine;

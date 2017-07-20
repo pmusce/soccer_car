@@ -43,6 +43,9 @@ void keyboardSpecial (int key, int x, int y) {
     case GLUT_KEY_F2:
       football->ChangeBallType();
       break;
+    case GLUT_KEY_F3:
+      car->ToggleLights();
+      break;
     default:
       break;
   }

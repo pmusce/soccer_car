@@ -56,8 +56,6 @@ GLuint LoadTexture(const char *filename, GLint param){
 
 
 void Floor::Init(){
-  collide=false;
-
   field_tex = LoadTexture("resource/texture/fussball.jpg", GL_CLAMP_TO_EDGE);
 
   cubeText[0] = LoadTexture("resource/texture/jajlands1_rt.jpg", GL_CLAMP_TO_EDGE);
@@ -75,7 +73,7 @@ void Floor::RenderSky() const{
   glDepthMask(GL_FALSE);
   // glDisable(GL_LIGHTING);
 
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
   // right
   glBindTexture(GL_TEXTURE_2D,cubeText[0]);
   glBegin(GL_QUADS);

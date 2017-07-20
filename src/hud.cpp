@@ -37,7 +37,10 @@ static void displayKeymap(int w, int h) {
   printText("D - turn right", 150, h-150-2*20);
   printText("S - break", 150, h-150-3*20);
   printText("SPACE - jump", 150, h-150-4*20);
-  printText("F1 - change camera", 150, h-150-5*20);
+
+  printText("F1 - change camera", 150, h-150-7*20);
+  printText("F2 - change ball type", 150, h-150-8*20);
+  printText("F3 - turn on/off headlight", 150, h-150-9*20);
 }
 
 static void displayMap() {

@@ -55,7 +55,6 @@ void Ball::Init(int x,int y, int z){
   face_tex = LoadTexture("resource/texture/me.jpg", GL_REPEAT);
 
   ball_type=BALL_MESH;
-  collide=true;
   px=x;
   py=y;
   pz=z;
