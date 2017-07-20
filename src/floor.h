@@ -13,11 +13,6 @@ private:
 	void RenderField() const;
 	void RenderGround() const;
   void RenderBorder() const;
-  void initTessField();
 
 	GLuint field_tex;
-
-  float tess_field_x[201];
-  float tess_field_z[201];
-
 };

@@ -55,20 +55,6 @@ GLuint LoadTexture(const char *filename, GLint param){
 }
 
 
-void Floor::initTessField() {
-  int K=200;
-  int S=20;
-  for (int x=0; x<K; x++)
-    for (int z=0; z<K; z++) {
-      float x0=-S + 2*(x+0)*S/K;
-      float x1=-S + 2*(x+1)*S/K;
-      float z0=-S + 2*(z+0)*S/K;
-      float z1=-S + 2*(z+1)*S/K;
-      tess_field_x[x] = x0;
-      tess_field_z[z] = z0;
-    }
-}
-
 void Floor::Init(){
   collide=false;
 
@@ -80,8 +66,6 @@ void Floor::Init(){
   cubeText[3] = LoadTexture("resource/texture/jajlands1_dn.jpg", GL_CLAMP_TO_EDGE);
   cubeText[4] = LoadTexture("resource/texture/jajlands1_bk.jpg", GL_CLAMP_TO_EDGE);
   cubeText[5] = LoadTexture("resource/texture/jajlands1_ft.jpg", GL_CLAMP_TO_EDGE);
-
-  initTessField();
 }
 
 void Floor::RenderSky() const{
