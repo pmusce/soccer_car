@@ -142,14 +142,14 @@ void Car::Frontlights(int light_num, float x, float y, float z) const{
 
   glEnable(light);
 
-  float col0[4]= {0.8,0.8,0.0,  1};
+  float col0[4]= {0.8,0.8,0.4,  1};
   glLightfv(light, GL_DIFFUSE, col0);
 
 
-  float col1[4]= {0.5,0.5,0.0,  1};
+  float col1[4]= {0.5,0.5,0.2,  1};
   glLightfv(light, GL_AMBIENT, col1);
 
-  float col2[4]= {1.0,1.0,0.3,  1};
+  float col2[4]= {1.0,1.0,0.6,  1};
   glLightfv(light, GL_SPECULAR, col2);
 
   float tmpPos[4] = {x,y,z,  1}; // ultima comp=1 => luce posizionale

@@ -51,7 +51,7 @@ void Ball::ChangeBallType() {
 }
 
 void Ball::Init(int x,int y, int z){
-  ball = new Mesh((char *)"../1/mesh/", (char *)"ball1.obj");
+  ball = new Mesh((char *)"resource/models/", (char *)"ball1.obj");
   face_tex = LoadTexture("resource/texture/me.jpg", GL_REPEAT);
 
   ball_type=BALL_MESH;
