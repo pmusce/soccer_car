@@ -20,6 +20,8 @@
 using namespace std;
 #endif
 
+float tess_field[201][201][2];
+
 GLuint cubeText[6];
 
 GLuint LoadTexture(const char *filename, GLint param){
@@ -54,6 +56,17 @@ GLuint LoadTexture(const char *filename, GLint param){
   return textbind;
 }
 
+
+void initTessField() {
+  int K = 200;
+  int S = 20;
+  for (int x=0; x<=K; x++)
+    for (int z=0; z<=K; z++) {
+      tess_field[x][z][0]=-S*1.5 + 2*(x+0)*S*1.5/K;
+      tess_field[x][z][1]=-S + 2*(z+0)*S/K;
+    }
+}
+
 void Floor::Init(){
   collide=false;
 
@@ -65,6 +78,8 @@ void Floor::Init(){
   cubeText[3] = LoadTexture("resource/texture/jajlands1_dn.jpg", GL_CLAMP_TO_EDGE);
   cubeText[4] = LoadTexture("resource/texture/jajlands1_bk.jpg", GL_CLAMP_TO_EDGE);
   cubeText[5] = LoadTexture("resource/texture/jajlands1_ft.jpg", GL_CLAMP_TO_EDGE);
+
+  initTessField();
 }
 
 void Floor::RenderSky() const{
@@ -72,7 +87,7 @@ void Floor::RenderSky() const{
   glEnable(GL_TEXTURE_2D);
   glColor3f(1,1,1);
   glDepthMask(GL_FALSE);
-  glDisable(GL_LIGHTING);
+  // glDisable(GL_LIGHTING);
 
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
   // right
@@ -125,26 +140,38 @@ void Floor::RenderSky() const{
     glTexCoord2f(0.0f, 0.0f); glVertex3f( -S,+S,+S );
   glEnd();
 
-  glEnable(GL_LIGHTING);
+  // glEnable(GL_LIGHTING);
   glDepthMask(GL_TRUE);
   glDisable(GL_TEXTURE_2D);
 }
 
+
 void Floor::RenderField() const{
   const float H=0; // altezza
   const float S=20; // size
+  //glShadeModel(GL_SMOOTH);
+  float grey[4] = {0.6, 0.6, 0.6, 1.0};
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, grey);
 
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, field_tex);
-  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+  glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+  int K = 200;
   glBegin(GL_QUADS);
-    glNormal3f(0,1,0);
+    glNormal3f(0,1,0);       // normale verticale uguale x tutti
+    for (int x=0; x<K; x++)
+      for (int z=0; z<K; z++) {
+        float x0=-S*1.5 + 2*(x+0)*S*1.5/K;
+        float x1=-S*1.5 + 2*(x+1)*S*1.5/K;
+        float z0=-S + 2*(z+0)*S/K;
+        float z1=-S + 2*(z+1)*S/K;
 
-    glTexCoord2f(0.0f, 0.0f); glVertex3d(-S*1.5, H, -S);
-    glTexCoord2f(1.0f, 0.0f); glVertex3d(+S*1.5, H, -S);
-    glTexCoord2f(1.0f, 1.0f); glVertex3d(+S*1.5, H, +S);
-    glTexCoord2f(0.0f, 1.0f); glVertex3d(-S*1.5, H, +S);
+        glTexCoord2f((float)x/K, (float)z/K); glVertex3d(x0, H, z0);
+        glTexCoord2f((float)(x+1)/K, (float)(z)/K); glVertex3d(x1, H, z0);
+        glTexCoord2f((float)(x+1)/K, (float)(z+1)/K); glVertex3d(x1, H, z1);
+        glTexCoord2f((float)x/K, (float)(z+1)/K); glVertex3d(x0, H, z1);
+      }
   glEnd();
 
   glDisable(GL_TEXTURE_2D);

@@ -16,6 +16,7 @@ public:
   // Metodi
   void Init(); // inizializza variabili
   void Render() const; // disegna a schermo
+  void Frontlights(int light_num, float x, float y, float z) const;
   void DoStep(); // computa un passo del motore fisico
   Car(){Init();} // costruttore
 

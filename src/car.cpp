@@ -129,6 +129,29 @@ void Car::Init(){
   grip = 0.45; // quanto il facing macchina si adegua velocemente allo sterzo
 }
 
+void Car::Frontlights(int light_num, float x, float y, float z) const{
+  GLuint light = GL_LIGHT1 + light_num;
+  glEnable(light);
+
+  float col0[4]= {0.8,0.8,0.0,  1};
+  glLightfv(light, GL_DIFFUSE, col0);
+
+  float col1[4]= {0.5,0.5,0.0,  1};
+  glLightfv(light, GL_AMBIENT, col1);
+
+  float tmpPos[4] = {x,y,z,  1}; // ultima comp=1 => luce posizionale
+  glLightfv(light, GL_POSITION, tmpPos );
+
+  float tmpDir[4] = {0,0,1,  0}; // ultima comp=1 => luce posizionale
+  glLightfv(light, GL_SPOT_DIRECTION, tmpDir );
+
+  glLightf (light, GL_SPOT_CUTOFF, 30);
+  glLightf (light, GL_SPOT_EXPONENT,5);
+
+  glLightf(light,GL_CONSTANT_ATTENUATION,0);
+  glLightf(light,GL_LINEAR_ATTENUATION,1);
+  //glDisable(light);
+}
 
 // disegna a schermo
 void Car::Render() const{
@@ -139,6 +162,8 @@ void Car::Render() const{
   glRotatef(180+facing, 0,1,0);
 
   glScalef(.15,.15,.15);
+  Frontlights(0, 1.8, 3.02, 5.3);
+  Frontlights(1, -1.8, 3.02, 5.3);
   carlinga->Render();
   engine->Render();
   glass->Render();
