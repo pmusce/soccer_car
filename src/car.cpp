@@ -145,7 +145,6 @@ void Car::Frontlights(int light_num, float x, float y, float z) const{
   float col0[4]= {0.8,0.8,0.4,  1};
   glLightfv(light, GL_DIFFUSE, col0);
 
-
   float col1[4]= {0.5,0.5,0.2,  1};
   glLightfv(light, GL_AMBIENT, col1);
 
