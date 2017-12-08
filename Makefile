@@ -16,12 +16,15 @@ INCS = -I. -I/usr/X11R6/include
 CXXINCS=#
 CXXFLAGS = $(CXXINCS)
 CFLAGS = $(INCS)
-RM = rm -f
+RM = rm -rf
 
-all: $(TARGET)
+all: $(ODIR) $(TARGET)
 
 clean:
-	${RM} $(ODIR)/*.o $(TARGET)
+	${RM} $(ODIR) $(TARGET)
+
+$(ODIR):
+	mkdir -p $(ODIR)
 
 $(ODIR)/%.o: $(SRCDIR)/%.cpp
 	$(CPP) -c -o $@ $< $(CXXFLAGS)
