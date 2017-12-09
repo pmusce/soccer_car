@@ -2,12 +2,33 @@
 
 A small OpenGL game made for the Computer Graphic course A.A.2015/16.
 
+# Indice
+1. [Introduzione](#introduzione)
+2. [Installazione](#installazione)
+3. [Gameplay](#gameplay)
+4. [Controlli](#controlli)
+5. [Sviluppo](#sviluppo)
+  1. [Main](#main)
+  1. [Mesh](#mesh)
+  1. [Camera](#camera)
+  1. [HUD](#hud)
+  1. [Collisioni](#collisioni)
+  1. [Punteggio](#punteggio)
+5. [Conclusioni](#conclusioni)
+
 ## Introduzione
 Soccer Car è un videogioco 3D interattivo di tipo "vehicular soccer video game". Il gioco è ambientato in un campo di calcio e si è al controllo di un auto d'epoca allo scopo di mandare la palla in rete.
 
 
 ## Installazione
-*Soccer Car* gira in ambiente Linux e richiede che siano installate le librerie SDL, OpenGL e GLUT.
+*Soccer Car* gira in ambiente GNU/Linux e richiede che siano installate le librerie SDL, OpenGL e GLUT.
+
+```
+sudo apt-get install libsdl2-dev
+sudo apt install libsdl2-image-dev
+sudo apt-get install libsdl2-ttf-dev
+sudo apt-get install freeglut3-dev
+```
 
 Per prima cosa bisogna compilare il codice sorgente, posizionandosi nella cartella di *Soccer Car* e lanciando:
 ```
