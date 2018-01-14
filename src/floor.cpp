@@ -1,6 +1,3 @@
-// car.cpp
-// implementazione dei metodi definiti in car.h
-
 #include <math.h>
 
 #include <SDL2/SDL.h>
@@ -54,7 +51,9 @@ GLuint LoadTexture(const char *filename, GLint param){
   return textbind;
 }
 
-
+/**
+ * Inizializzazione della scenografia
+ */
 void Floor::Init(){
   field_tex = LoadTexture("resource/texture/fussball.jpg", GL_CLAMP_TO_EDGE);
 
@@ -66,6 +65,9 @@ void Floor::Init(){
   cubeText[5] = LoadTexture("resource/texture/jajlands1_ft.jpg", GL_CLAMP_TO_EDGE);
 }
 
+/**
+ * Render della SkyBox
+ */
 void Floor::RenderSky() const{
   int S = 80;
   glEnable(GL_TEXTURE_2D);
@@ -129,7 +131,9 @@ void Floor::RenderSky() const{
   glDisable(GL_TEXTURE_2D);
 }
 
-
+/**
+ * Render del campo
+ */
 void Floor::RenderField() const{
   const float H=0; // altezza
   const float S=20; // size
@@ -141,6 +145,7 @@ void Floor::RenderField() const{
   glBindTexture(GL_TEXTURE_2D, field_tex);
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
+  // tesseling
   int K = 100;
   glBegin(GL_QUADS);
     for (int x=0; x<K; x++) {
@@ -172,6 +177,9 @@ void Floor::RenderField() const{
   glDisable(GL_TEXTURE_2D);
 }
 
+/**
+ * Render del piano
+ */
 void Floor::RenderGround() const{
   float grey[4] = {0.6, 0.6, 0.6, 1.0};
 
@@ -191,6 +199,9 @@ static Vector3 ComputeNormal(Point3 p0, Point3 p1, Point3 p2) {
   return -( (p1 - p0) % (p2 - p0) ).Normalize();
 }
 
+/**
+ * Render dei bordi del campo
+ */
 void Floor::RenderBorder() const{
   Point3 v[10];
 

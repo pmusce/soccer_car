@@ -4,8 +4,10 @@
 #include <vector>
 #include "point3.h"
 
-// classe Vertex:
-// i vertici della mesh
+/**
+ * classe Vertex:
+ * i vertici della mesh
+ */
 class Vertex
 {
 public:
@@ -15,6 +17,10 @@ public:
   Vector3 n;
 };
 
+/**
+ * classe Edge:
+ * lato della mesh
+ */
 class Edge
 {
 public:
@@ -22,6 +28,10 @@ public:
   // attributi per edge:
 };
 
+/**
+ * classe Material:
+ * definizione di un materiale della mesh
+ */
 class Material
 {
 public:
@@ -40,6 +50,10 @@ public:
   bool LoadTexture(char* filename);
 };
 
+/**
+ * classe Face
+ * Facce della mesh
+ */
 class Face
 {
 public:
@@ -68,7 +82,9 @@ public:
   // attributi per wedge
 };
 
-
+/**
+ * classe Mesh
+ */
 class Mesh
 {
   std::vector<Vertex> v; // vettore di vertici

@@ -13,6 +13,14 @@
 
 #include "mesh.h"
 
+/**************************
+ * Material
+ **************************/
+
+/**
+ * dice alle OpenGL di utilizzare il materiale corrente per un successivo
+ * rendering di una mesh
+ */
 void Material::useMaterial() {
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, Kd);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, Ks);
@@ -20,7 +28,10 @@ void Material::useMaterial() {
   glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &Ns);
 }
 
-
+/**
+ * Carica la texture da file da usare per il materiale corrente
+ * @param  filename Path del file della texture
+ */
 bool Material::LoadTexture(char *filename){
   SDL_Surface *s = IMG_Load(filename);
   if (!s) {
@@ -53,6 +64,13 @@ bool Material::LoadTexture(char *filename){
   return true;
 }
 
+/**************************
+ * Mesh
+ **************************/
+
+/**
+ * Calcola le normali di ogni faccia della mesh
+ */
 void Mesh::ComputeNormalsPerFace()
 {
   for (int i=0; i<f.size(); i++)
@@ -61,14 +79,20 @@ void Mesh::ComputeNormalsPerFace()
   }
 }
 
+/**
+ * Imposta un colore per la mesh
+ * @param color Colore in RGB
+ */
 void Mesh::SetDiffuse(float* color) {
   mtl[0]->Kd[0] = color[0];
   mtl[0]->Kd[1] = color[1];
   mtl[0]->Kd[2] = color[2];
 }
 
-// Computo normali per vertice
-// (come media rinormalizzata delle normali delle facce adjacenti)
+/**
+ * Computo normali per vertice
+ * (come media rinormalizzata delle normali delle facce adiacenti)
+ */
 void Mesh::ComputeNormalsPerVertex()
 {
   // uso solo le strutture di navigazione FV (da Faccia a Vertice)!
@@ -77,14 +101,12 @@ void Mesh::ComputeNormalsPerVertex()
   for (int i=0; i<v.size(); i++) {
     v[i].n = Point3(0,0,0);
   }
-
   // fase due: ciclo sulle facce: accumulo le normali di F nei 3 V corrispondenti
   for (int i=0; i<f.size(); i++) {
     f[i].v[0]->n=f[i].v[0]->n + f[i].n;
     f[i].v[1]->n=f[i].v[1]->n + f[i].n;
     f[i].v[2]->n=f[i].v[2]->n + f[i].n;
   }
-
   // fase tre: ciclo sui vertici; rinormalizzo
   // la normale media rinormalizzata e' uguale alla somma delle normnali, rinormalizzata
   for (int i=0; i<v.size(); i++) {
@@ -92,7 +114,9 @@ void Mesh::ComputeNormalsPerVertex()
   }
 }
 
-
+/**
+ * Rendering della mesh senza texture
+ */
 void Mesh::NoTexRender() {
   glDisable(GL_TEXTURE_2D);
   // mandiamo tutti i triangoli a schermo
@@ -116,6 +140,9 @@ void Mesh::NoTexRender() {
   glEnd();
 }
 
+/**
+ * Rendering della mesh
+ */
 void Mesh::Render()
 {
   if(mtl[0]->use_texture) {
@@ -151,6 +178,9 @@ void Mesh::Render()
   glEnd();
 }
 
+/**
+ * Restituisce il materiale con il nome dato in input al metodo
+ */
 Material* Mesh::GetMaterial(char *name) {
   for (int i=0; i<mtl.size(); i++) {
     if(strcmp(mtl[i]->name, name) == 0)
@@ -170,6 +200,9 @@ void Mesh::ComputeBoundingBox(){
   }
 }
 
+/**
+ * Carica per la mesh i materiali da file .mtl
+ */
 bool Mesh::LoadMaterials(char *path, char *filename) {
   char fullpath[80] = "";
   strcat(fullpath, path);
@@ -246,6 +279,9 @@ bool Mesh::LoadMaterials(char *path, char *filename) {
   return true;
 }
 
+/**
+ * Carica mesh da file .obj
+ */
 bool Mesh::LoadFromObj(char *path, char *filename)
 {
   char fullpath[80] = "";

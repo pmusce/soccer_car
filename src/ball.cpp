@@ -13,6 +13,7 @@ using namespace std;
 #endif
 
 extern GLuint LoadTexture(const char *filename, GLint param);
+
 // DoStep: facciamo un passo di fisica (a delta-t costante)
 //
 // Indipendente dal rendering.
@@ -46,10 +47,16 @@ void Ball::DoStep(){
   }
 }
 
+/**
+ * Cambia tipologia di palla (palla da calcio, sfera con immagine personale)
+ */
 void Ball::ChangeBallType() {
   ball_type = (ball_type + 1) % BALL_MAX_NUM;
 }
 
+/**
+ * Inizializzazione della palla
+ */
 void Ball::Init(int x,int y, int z){
   ball = new Mesh((char *)"resource/models/", (char *)"ball1.obj");
   face_tex = LoadTexture("resource/texture/me.jpg", GL_REPEAT);
@@ -69,6 +76,9 @@ void Ball::Init(int x,int y, int z){
   attritoY = 0.991;  // attrito sulla y nullo
 }
 
+/**
+ * Render della palla con texture con immagine personale
+ */
 void Ball::RenderFaceBall() const{
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, face_tex);
@@ -89,7 +99,9 @@ void Ball::RenderFaceBall() const{
 }
 
 
-// disegna a schermo
+/**
+ * Render della palla
+ */
 void Ball::Render() const{
   // sono nello spazio mondo
   glPushMatrix();
@@ -111,6 +123,9 @@ void Ball::Render() const{
   glPopMatrix();
 }
 
+/**
+ * Imprime una spinta alla palla dopo un urto
+ */
 void Ball::Hit(float fx, float fy, float fz) {
   vx+=fx;
   vy+=fy;

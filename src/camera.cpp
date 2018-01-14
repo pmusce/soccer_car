@@ -10,19 +10,28 @@ float eyeDist=7.0;
 
 extern Car* car;
 extern Ball* football;
-static int currentCamera = CAMERA_BALL;
+static int currentCamera = CAMERA_BALL; // Tipo di camera (definiti in camera.h)
 
+/**
+ * Cambia tipo di camera
+ */
 int nextCamera() {
   currentCamera = (currentCamera+1) % CAMERA_MAX_NUM;
   return currentCamera;
 }
 
+/**
+ * Camera ruotabile utilizzando il mouse
+ */
 void setMouseCamera() {
   glTranslatef(0,0,-eyeDist);
   glRotatef(viewBeta,  1,0,0);
   glRotatef(viewAlpha, 0,1,0);
 }
 
+/**
+ * Camera fissa dietro l'auto
+ */
 void setCarCamera() {
   double px = car->px;
   double py = car->py;
@@ -43,6 +52,9 @@ void setCarCamera() {
   gluLookAt(ex,ey,ez,cx,cy,cz,0.0,1.0,0.0);
 }
 
+/**
+ * Camera fissa sulla palla
+ */
 void setBallCamera() {
   double px = car->px;
   double py = car->py;
@@ -67,6 +79,9 @@ void setBallCamera() {
   gluLookAt(ex,ey,ez,cx,cy,cz,0.0,1.0,0.0);
 }
 
+/**
+ * Inizializza la camera in base al tipo di camera selezionato
+ */
 void setCamera() {
   switch(currentCamera) {
     case CAMERA_MOUSE:

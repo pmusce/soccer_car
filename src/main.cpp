@@ -23,19 +23,23 @@
 int nstep=0; // numero di passi di FISICA fatti fin'ora
 const int PHYS_SAMPLING_STEP=10; // numero di millisec che un passo di fisica simula
 
-float light_v[4] = {0.1,1,2,0};
+float light_v[4] = {0.1,1,2,0}; // posizione della luce principale
 
-Car* car;
-Floor* ground;
-Ball* football;
-Goal* goal1;
-Goal* goal2;
+Car* car; // automobile
+Floor* ground; // campo
+Ball* football; // palla
+Goal* goal1; // porta rossa
+Goal* goal2; // porta blu
 
-int score[2] = {0,0};
-bool scoring=false;
-Uint32 scoreTime;
-int scoringTeam = 0;
+int score[2] = {0, 0}; // punteggi
+bool scoring=false; // true se è stato appena segnato un goal
+Uint32 scoreTime; // timer fra il goal e la reinizializzazione della scena
+int scoringTeam = 0; // squadra che ha segnato goal
 
+/**
+ * Funzione di reset della scena. Mette la palla al centro e l'auto in direzione
+ * della porta della squadra che ha appena segnato.
+ */
 void reset_scene() {
   football->setPos(0.0,0.0,0.0);
   football->setVel(0.0,0.0,0.0);
@@ -51,6 +55,12 @@ void reset_scene() {
   }
 }
 
+/**
+ * Rileva collisione fra due oggetti, approssimati come sfere.
+ * @param  obj1
+ * @param  obj2
+ * @return True se la collisione è avvenuta, False altrimenti
+ */
 int detect_collision(Object3D *obj1, Object3D *obj2) {
   float distance;
   float deltaX, deltaY, deltaZ;
@@ -63,7 +73,10 @@ int detect_collision(Object3D *obj1, Object3D *obj2) {
   return distance <= obj1->collisionRadius+obj2->collisionRadius;
 }
 
-
+/**
+ * Controlla se la palla è dentro la porta blu
+ * @return True / False
+ */
 bool point_for_red() {
   if(football->px > 26.75 && football->px < 27.25)
     if(football->pz < 4.5 && football->pz > -4.5) {
@@ -72,6 +85,10 @@ bool point_for_red() {
   return false;
 }
 
+/**
+ * Controlla se la palla è dentro la porta rossa
+ * @return True / False
+ */
 bool point_for_blue() {
   if(football->px < -26.75 && football->px > -27.25)
     if(football->pz < 4.5 && football->pz > -4.5) {
@@ -80,6 +97,9 @@ bool point_for_blue() {
   return false;
 }
 
+/**
+ * Controlla se è stato segnato un goal, aggiorna i punteggi e resetta la scena
+ */
 void check_scores() {
   if(point_for_red()) {
     scoringTeam = RED_TEAM;
@@ -103,6 +123,9 @@ void check_scores() {
   }
 }
 
+/**
+ * Inizializzazione degli oggetti di scena
+ */
 void initObjects(void) {
   float red[] = {1.0, 0.0, 0.0};
   float blue[] = {0.0, 0.0, 1.0};
@@ -115,6 +138,9 @@ void initObjects(void) {
   reset_scene();
 }
 
+/**
+ * Funzione di inizializzazione
+ */
 void init(void)
 {
   glClearColor (0.0,0.0,0.0,0.0);
@@ -131,7 +157,9 @@ void init(void)
   initObjects();
 }
 
-
+/**
+ * Inizializza le luci
+ */
 void light (void) {
   GLfloat whiteSpecularLight[] = {1.0, 1.0, 1.0}; //set the light specular to white
   GLfloat blackAmbientLight[] = {0.0, 0.0, 0.0}; //set the light ambient to black
@@ -143,6 +171,11 @@ void light (void) {
   glLightfv(GL_LIGHT0, GL_DIFFUSE, whiteDiffuseLight);
 }
 
+/**
+ * Funzione chiamata da GLUT per il rendering della scena.
+ * Pulisce la scena, inizializza camera e luci, renderizza gli oggetti, disegna
+ * l'HUD e scambia il back-buffer
+ */
 void display(void)
 {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -161,6 +194,9 @@ void display(void)
   glutSwapBuffers();
 }
 
+/**
+ * Funzione richiamata da GLUT quando viene ridimensionata la finestra
+ */
 void reshape(int w, int h)
 {
   glViewport(0, 0, (GLsizei) w, (GLsizei) h);
@@ -172,6 +208,10 @@ void reshape(int w, int h)
   glTranslatef(0.0, 0.0, -3.6);
 }
 
+/**
+ * Funzione richiamata da GLUT ogni 50 ms, per forzare la chiamata alla funzione
+ * di display
+ */
 void My_timer_routine( int t )
 {
   // Update display
@@ -180,6 +220,12 @@ void My_timer_routine( int t )
   glutTimerFunc( 50, My_timer_routine, 0);
 }
 
+/**
+ * Funzione richiamata da GLUT quando in stato di idle.
+ * Fa muovere gli oggetti di scena in base alle loro velocità, controlla le
+ * eventuali collisioni e reagisce di conseguenza, controlla se è stato segnato
+ * un goal
+ */
 void idleFunc() {
   Uint32 timeNow=SDL_GetTicks(); // che ore sono?
   bool doneSomething=false;
@@ -215,6 +261,11 @@ void idleFunc() {
   if (doneSomething) display();
 }
 
+/**
+ * Main
+ * Inizializza le librerie e definisce le funzioni richiamate dalle librerie GLUT
+ * nel ciclo principale
+ */
 int main(int argc, char** argv)
 {
   glutInit(&argc, argv);

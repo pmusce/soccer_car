@@ -12,12 +12,21 @@ extern int scoringTeam;
 
 bool is_showing_keymap = false;
 
+/**
+ * Stampa una stringa a schermo
+ * @param t Stringa da stampare
+ * @param x Posizione rispetto all'asse x
+ * @param y Posizione rispetto all'asse y
+ */
 static void printText(const char* t, int x, int y) {
   glRasterPos2f(x, y);
   for(int i=0; i<strlen(t); i++)
     glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, t[i]);
 }
 
+/**
+ * Visualizza la mappa dei tasti/comandi
+ */
 static void displayKeymap(int w, int h) {
   int margin = 100;
 
@@ -43,6 +52,9 @@ static void displayKeymap(int w, int h) {
   printText("F3 - turn on/off headlight", 150, h-150-9*20);
 }
 
+/**
+ * Disegna la mappa del campo, contenente posizione automobile e palla
+ */
 static void displayMap() {
   int margin = 20;
   int scaling = 3;
@@ -69,6 +81,9 @@ static void displayMap() {
   glEnd();
 }
 
+/**
+ * Disegna a schermo i punteggi
+ */
 static void displayScore(int w, int h) {
   char t[30];
   sprintf(t, "Red %d - %d Blue", score[0], score[1]);
@@ -77,11 +92,17 @@ static void displayScore(int w, int h) {
   printText(t,50,h-50);
 }
 
+/**
+ * Scrive a schermo il messaggio di goal segnato
+ */
 static void displayGoal(int w, int h) {
   glColor4f(1.0f, 1.0f, 1.0f, 0.9f);
   printText("GOAL!", w/2 - 20, h/2);
 }
 
+/**
+ * Disegna l'HUD
+ */
 void drawHUD() {
   GLint m_viewport[4];
   glGetIntegerv( GL_VIEWPORT, m_viewport );

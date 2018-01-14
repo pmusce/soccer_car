@@ -13,12 +13,20 @@
 using namespace std;
 #endif
 
+/********************
+ * Controller
+ ********************/
 
+/**
+ * Inizializzazione tasti
+ */
 void Controller::Init(){
   for (int i=0; i<NKEYS; i++) key[i]=false;
 }
 
-// da invocare quando e' stato premuto/rilasciato il tasto numero "keycode"
+/**
+ * da invocare quando e' stato premuto/rilasciato il tasto numero "keycode"
+ */
 void Controller::EatKey(int keycode, int* keymap, bool pressed_or_released)
 {
   for (int i=0; i<NKEYS; i++){
@@ -26,13 +34,18 @@ void Controller::EatKey(int keycode, int* keymap, bool pressed_or_released)
   }
 }
 
+/********************
+ * Car
+ ********************/
 
-// DoStep: facciamo un passo di fisica (a delta-t costante)
-//
-// Indipendente dal rendering.
-//
-// ricordiamoci che possiamo LEGGERE ma mai SCRIVERE
-// la struttura controller da DoStep
+/**
+ * DoStep: facciamo un passo di fisica (a delta-t costante)
+ *
+ * Indipendente dal rendering.
+ *
+ * ricordiamoci che possiamo LEGGERE ma mai SCRIVERE
+ * la struttura controller da DoStep
+ */
 void Car::DoStep(){
   // computiamo l'evolversi della macchina
 
@@ -56,7 +69,7 @@ void Car::DoStep(){
   if (controller.key[Controller::ACC]) vzm-=accMax; // accelerazione in avanti
   if (controller.key[Controller::DEC]) vzm+=accMax; // accelerazione indietro
 
-  if (controller.key[Controller::JUM] && py < 0.001) vym+=0.05;
+  if (controller.key[Controller::JUM] && py < 0.001) vym+=0.05; // salto
   else vym-=0.0011;;
   // attriti (semplificando)
   vxm*=attritoX;
@@ -89,6 +102,9 @@ void Car::DoStep(){
   pz+=vz;
 }
 
+/**
+ * Inizializzazione dell'automobile
+ */
 void Car::Init(){
   collisionRadius = 1;
   isLightsActive = true;
@@ -128,10 +144,16 @@ void Car::Init(){
   grip = 0.45; // quanto il facing macchina si adegua velocemente allo sterzo
 }
 
+/**
+ * Attiva/disattiva luci anteriori dell'automobile
+ */
 void Car::ToggleLights() {
   isLightsActive = !isLightsActive;
 }
 
+/**
+ * Abilita luci per luce anteriore automobile
+ */
 void Car::Frontlights(int light_num, float x, float y, float z) const{
   GLuint light = GL_LIGHT1 + light_num;
 
@@ -164,7 +186,9 @@ void Car::Frontlights(int light_num, float x, float y, float z) const{
   glLightf(light,GL_LINEAR_ATTENUATION,0.75);
 }
 
-// disegna a schermo
+/**
+ * Disegna a schermo l'automobile
+ */
 void Car::Render() const{
   // sono nello spazio mondo
   glPushMatrix();
