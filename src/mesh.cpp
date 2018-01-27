@@ -266,7 +266,7 @@ bool Mesh::LoadMaterials(char *path, char *filename) {
       continue;
     }
     if (strcmp(buf,"map_Kd")==0) {
-      char tx_fname[30];
+      char tx_fname[80];
       fscanf(file,"%s", tx_fname);
       m->LoadTexture(tx_fname);
       continue;
